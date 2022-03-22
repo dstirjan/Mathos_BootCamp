@@ -58,7 +58,7 @@ namespace DonorsWebApi.Controllers
             }
             else if (specificDonor == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{id}' at list");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{id}'");
             }
             return Request.CreateResponse(HttpStatusCode.OK, specificDonor);
         }
@@ -78,7 +78,7 @@ namespace DonorsWebApi.Controllers
             donors.Add(donor);
             donor.ReferentCode = Guid.NewGuid();
             HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.Created, donor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add donor with id '{id}' at list");
+            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add donor with id '{id}'");
         }
 
         [HttpPut]
@@ -88,7 +88,7 @@ namespace DonorsWebApi.Controllers
 
             if (existingDonor == null)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{donor.Id}' at list");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{donor.Id}'");
             }
 
             existingDonor.Id = donor.Id;
@@ -97,7 +97,7 @@ namespace DonorsWebApi.Controllers
             existingDonor.DonNumber = donor.DonNumber;
 
             HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, donor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully change donor with id '{donor.Id}' at list");
+            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully change donor with id '{donor.Id}'");
         }
 
         [HttpDelete]
@@ -112,7 +112,7 @@ namespace DonorsWebApi.Controllers
             else
             {
                 HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, specificDonor);
-                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove donor with id '{specificDonor.Id}' at list");
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove donor with id '{specificDonor.Id}'");
             }
         }
     }
