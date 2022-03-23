@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DonorsWebApi.Models;
+using BloodDonorWebApi.Models;
 
-namespace DonorsWebApi.Controllers
+namespace BloodDonorWebApi.Controllers
 {
-    public class DonorsController : ApiController
+    public class DonorController : ApiController
     {
         static List<DonorViewModel> donors = new List<DonorViewModel>()
         {
@@ -18,6 +18,7 @@ namespace DonorsWebApi.Controllers
             FirstName = "Dejan",
             LastName = "Stirjan",
             DonNumber = "6",
+            Email = "ds@gmail.com",
             ReferentCode = Guid.NewGuid(),
             },
             new DonorViewModel
@@ -26,6 +27,7 @@ namespace DonorsWebApi.Controllers
             FirstName = "Ivan",
             LastName = "Kovac",
             DonNumber = "5",
+            Email = "ik@gmail.com",
             ReferentCode = Guid.NewGuid(),
             },
             new DonorViewModel
@@ -34,6 +36,7 @@ namespace DonorsWebApi.Controllers
             FirstName = "Marko",
             LastName = "Hrastinski",
             DonNumber = "12",
+            Email = "mh@gmail.com",
             ReferentCode = Guid.NewGuid(),
             }
         };
@@ -94,6 +97,7 @@ namespace DonorsWebApi.Controllers
             existingDonor.Id = donor.Id;
             existingDonor.FirstName = donor.FirstName;
             existingDonor.LastName = donor.LastName;
+            existingDonor.Email = donor.Email;
             existingDonor.DonNumber = donor.DonNumber;
 
             HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, donor);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DonorsWebApi.Models
+namespace BloodDonorWebApi.Models
 {
     public class DonorViewModel
     {
@@ -11,6 +11,7 @@ namespace DonorsWebApi.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string DonNumber { get; set; }
+        public string Email { get; set; }
         public Guid ReferentCode { get; set; }
     }
 }

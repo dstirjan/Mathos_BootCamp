@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using DonorsWebApi.Models;
+using BloodDonorWebApi.Models;
 
-namespace DonorsWebApi.Controllers
+namespace BloodDonorWebApi.Controllers
 {
-    public class DoctorsController : ApiController
+    public class DoctorController : ApiController
     {
         static List<DoctorViewModel> doctors = new List<DoctorViewModel>()
         {
