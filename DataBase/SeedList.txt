@@ -1,0 +1,47 @@
+insert into Donor(FirstName,LastName,DonNumber,Email)
+values 
+('Matko','Ok','1','om@gmail.com'),
+('Dejan','Stirjan','4','ds@gmail.com'),
+('Ivan','Husnjak','7','ih@gmail.com'),
+('Goran','Kovcic','3','gk@gmail.com');
+('Boris','Hrastinski','8','bh@gmail.com');
+
+Insert into Doctor(FirstName,LastName,LicenceID,Specialization)
+values
+('Vlado','Habulinec','356653','Transfusiology'),
+('Branko','Matijevic','160461','Pediatrics');
+('Ana','Kramar','290489','Cardiology');
+
+Insert into Hospital(DoctorID,DonorID)
+values
+('356653','1'),
+('290489','2'),
+('160461','3'),
+('356653','4'),
+('160461','5');
+
+insert into Donor(FirstName,LastName,DonNumber,Email)
+values 
+('Sara','Saric','2','ss@gmail.com'),
+('Alen','Huk','8','ah@gmail.com'),
+('Matija','Lovrek','6','ml@gmail.com'),
+('Ivo','Vida','6','iv@gmail.com'),
+('Denisa','Kovac','9','dk@gmail.com'),
+('Zeljko','Mitrovic','12','zm@gmail.com'),
+('Lea','Sirovec','4','ls@gmail.com'),
+('Ivana','Pavlek','7','ip@gmail.com'),
+('Ruzica','Bozicevic','3','rb@gmail.com');
+('Valentina','Hrastinski','8','vh@gmail.com');
+
+Insert into Hospital(DoctorID,DonorID)
+values
+('290489','6'),
+('290489','7'),
+('160461','8'),
+('356653','9'),
+('160461','10'),
+('356653','11'),
+('290489','12'),
+('160461','13'),
+('290489','14'),
+('356653','15');

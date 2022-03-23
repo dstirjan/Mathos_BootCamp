@@ -1,0 +1,67 @@
+--table creation
+
+CREATE TABLE Donor(
+ID			int not null IDENTITY(1,1) PRIMARY KEY ,
+FirstName		varchar(100),
+LastName		varchar(100),
+DonNumber		int,
+Email			varchar(100),
+ReferentCode		UNIQUEIDENTIFIER not null default NEWID(), 
+);
+
+CREATE TABLE Doctor(
+LicenceID		int PRIMARY KEY,
+FirstName		varchar(100),
+LastName		varchar(100),
+Specialization 		varchar(100),
+);
+
+CREATE TABLE Hospital(
+ID			int not null IDENTITY(1,1) PRIMARY KEY,
+Date			smalldatetime not null default GETDATE(),
+DoctorID		int,
+DonorID			int,
+FOREIGN KEY ("DoctorID") REFERENCES Doctor("LicenceID"),
+FOREIGN KEY ("DonorID") REFERENCES Donor("ID"),
+);
+
+
+--CRUD
+
+SELECT * FROM Donor;
+SELECT * FROM Doctor;
+SELECT * FROM Hospital;
+
+UPDATE Donor SET LastName = 'Kovacic', Email= 'goc@gmail.com' WHERE ID = 4;
+UPDATE Donor SET DonNumber = '5' WHERE LastName = 'Stirjan' OR FirstName= 'Goran';
+UPDATE Doctor SET LastName = 'Matijevic' WHERE LastName = 'Kramar' ;
+UPDATE Doctor SET Specialization = 'Neurology' WHERE LastName = 'Matijevic' AND FirstName ='Ana';
+UPDATE Donor SET DonNumber = '5' WHERE LastName = 'Stirjan' OR FirstName= 'Goran';
+
+DELETE FROM Hospital WHERE ID=4;
+DELETE FROM Hospital WHERE ID=2 or ID=6;
+
+--pageing
+
+DECLARE @page int;
+DECLARE @pageLenght int;
+SET @page = 1;
+SET @pageLenght= 6;
+Select * from Donor
+Order By ID
+OFFSET (@page - 1) * @pageLenght ROWS
+FETCH NEXT @pageLenght ROWS ONLY
+
+--sorting
+
+SELECT * FROM Donor ORDER BY DonNumber DESC;
+SELECT LastName FROM Doctor ORDER BY LicenceID ASC;
+
+--filtering
+SELECT * FROM Hospital WHERE (DoctorId = 160461);
+SELECT ID,LastName FROM Donor WHERE (DonNumber <= 4);
+
+
+--join
+SELECT Hospital.Id, Doctor.LastName, Donor.Lastname FROM
+((Hospital INNER JOIN Doctor on Hospital.DoctorId = Doctor.LicenceId) INNER JOIN Donor on Hospital.DonorId = Donor.Id);
