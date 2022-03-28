@@ -1,0 +1,6 @@
+E:\BootCamp\BloodDonors\BloodDonor.Model\bin\Debug\BloodDonor.Model.dll
+E:\BootCamp\BloodDonors\BloodDonor.Model\bin\Debug\BloodDonor.Model.pdb
+E:\BootCamp\BloodDonors\BloodDonor.Model\obj\Debug\BloodDonor.Model.csprojAssemblyReference.cache
+E:\BootCamp\BloodDonors\BloodDonor.Model\obj\Debug\BloodDonor.Model.csproj.CoreCompileInputs.cache
+E:\BootCamp\BloodDonors\BloodDonor.Model\obj\Debug\BloodDonor.Model.dll
+E:\BootCamp\BloodDonors\BloodDonor.Model\obj\Debug\BloodDonor.Model.pdb

@@ -7,7 +7,7 @@ namespace BloodDonorWebApi.Models
 {
     public class DoctorViewModel
     {
-        public int LicenceID { get; set; }
+        public int Licence { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Specialization { get; set; }

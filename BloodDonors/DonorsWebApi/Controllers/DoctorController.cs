@@ -1,128 +1,164 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using BloodDonorWebApi.Models;
+using BloodDonor.Service;
+using BloodDonor.Model;
+using System.Threading.Tasks;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DoctorController : ApiController
     {
-        static List<DoctorViewModel> doctors = new List<DoctorViewModel>()
-        {
-            new DoctorViewModel
-            {
-            LicenceID = 111111,
-            FirstName = "Ivan",
-            LastName = "Matic",
-            Specialization = "Cardiology",
-            },
-            new DoctorViewModel
-            {
-            LicenceID = 436625,
-            FirstName = "Goran",
-            LastName = "Otic",
-            Specialization = "Otorinolaringology",
-            },
-            new DoctorViewModel
-            {
-            LicenceID = 3458879,
-            FirstName = "Ana",
-            LastName = "Matic",
-            Specialization = "Transfusiology",
-            },
-        };
-
         [HttpGet]
-        [Route("api/doctors")]
-        public HttpResponseMessage Point()
+        [Route("api/doctor")]
+        public async Task<HttpResponseMessage> GetDoctorAsync()
         {
-            if (doctors == null || doctors.Count == 0)
+            DoctorService doctorService = new DoctorService();
+            List<DoctorModel> mapModel = new List<DoctorModel>();
+            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+
+            mapModel =await doctorService.GetDoctorAsync();
+
+            foreach (var doctor in mapModel)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor at list");
+                DoctorViewModel doctorViewModel = new DoctorViewModel();
+                doctorViewModel.Licence = doctor.Licence;
+                doctorViewModel.FirstName = doctor.FirstName;
+                doctorViewModel.LastName = doctor.LastName;
+                doctorViewModel.Specialization = doctor.Specialization;
+                viewModel.Add(doctorViewModel);
             }
-            return Request.CreateResponse(HttpStatusCode.OK,doctors);
-        }
-
-        [HttpGet()]
-        [Route("api/doctors/lastname/{lastName}")]
-        public HttpResponseMessage Point(string lastName)
-        {
-
-            var doctorsByLastName = doctors.FindAll(c => c.LastName == lastName);
-            if (doctors == null || !doctors.Any())
+            if (mapModel.Any())
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctors at list");
-            }
-            else if (doctorsByLastName.Count == 0)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no doctors with '{lastName}' last name");
-            }
-            return Request.CreateResponse(HttpStatusCode.OK, doctorsByLastName);
-        }
-
-        [HttpGet()]
-        [Route("api/doctors/licence/{lid}")]
-        public HttpResponseMessage Point(int lid)
-        {
-            var doctorLID = doctors.Find(c => c.LicenceID == lid);
-            if (doctors == null || doctors.Count == 0)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctors at list");
-            }
-            else if (doctorLID == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no doctor with Licence:'{lid}'");
-            }
-            return Request.CreateResponse(HttpStatusCode.OK, doctorLID);
-        }
-
-        [HttpPost]
-        [Route("api/doctors/add")]
-        public HttpResponseMessage Add(DoctorViewModel doctor)
-        {
-            doctors.Add(doctor);
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.Created, doctor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add doctor of " +
-                $"{doctor.Specialization} , doc.{doctor.FirstName} {doctor.LastName}, with Licence: { doctor.LicenceID} ");
-        }
-
-        [HttpPut]
-        [Route("api/doctors/change/{lid}")]
-        public HttpResponseMessage Change(DoctorViewModel doctor, [FromUri] int lid)
-        {
-            var existingLID = doctors.Find(s => s.LicenceID == lid);
-            if (existingLID == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no doctor with LicenceID:'{lid}' on the list");
-            }
-
-            existingLID.FirstName = doctor.FirstName;
-            existingLID.LastName = doctor.LastName;
-            existingLID.Specialization = doctor.Specialization;
-
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, doctor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully change doctor with LicenceID:'{lid}' on the list");
-        }
-
-        [HttpDelete]
-        [Route("api/doctors/delete/{lid}")]
-        public HttpResponseMessage Remove(int lid)
-        {
-            var doctorLid = doctors.Find(s => s.LicenceID == lid);
-            doctors.Remove(doctorLid);
-            if (doctorLid == null)
-            {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no doctor with LicenceID:'{lid}'");
+                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
             }
             else
             {
-                HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, doctorLid);
-                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove doctor with LicenceID:'{doctorLid.LicenceID}' from the list");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donors at list");
+            }
+
+        }
+
+        [HttpGet()]
+        [Route("api/doctor/lastname/{lastName}")]
+        public async Task<HttpResponseMessage> GetDoctorLNAsync([FromUri] string lastName)
+        {
+
+            DoctorService doctorService = new DoctorService();
+            List<DoctorModel> mapModel = new List<DoctorModel>();
+            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+
+
+            mapModel = await doctorService.GetDoctorLNAsync(lastName);
+            foreach (var doctor in mapModel)
+            {
+                DoctorViewModel doctorView = new DoctorViewModel();
+                doctorView.Licence = doctor.Licence;
+                doctorView.FirstName = doctor.FirstName;
+                doctorView.LastName = doctor.LastName;
+                doctorView.Specialization = doctor.Specialization;
+
+                viewModel.Add(doctorView);
+            }
+
+            if (mapModel.Any())
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no any doctor with {lastName}");
+            }
+        }
+
+        [HttpGet()]
+        [Route("api/doctor/licence/{lid}")]
+        public async Task<HttpResponseMessage> GetDoctorByLidAsync([FromUri] int lid)
+        {
+            DoctorService doctorService = new DoctorService();
+            List<DoctorModel> mapModel = new List<DoctorModel>();
+            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+
+
+            mapModel = await doctorService.GetDoctorByLidAsync(lid);
+            foreach (var doctor in mapModel)
+            {
+                DoctorViewModel doctorView = new DoctorViewModel();
+                doctorView.Licence = doctor.Licence;
+                doctorView.FirstName = doctor.FirstName;
+                doctorView.LastName = doctor.LastName;
+                doctorView.Specialization = doctor.Specialization;
+
+                viewModel.Add(doctorView);
+            }
+
+            if (mapModel.Any())
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no any doctor with Licence: {lid}");
+            }
+        }
+
+        [HttpPost]
+        [Route("api/doctor/add")]
+        public async Task<HttpResponseMessage> InsertDoctorAsync([FromBody] DoctorViewModel doctor)
+        {
+            DoctorService doctorService = new DoctorService();
+            List<DoctorViewModel> bodyCheck = new List<DoctorViewModel>();
+
+            var newDoctor = new DoctorModel()
+            {
+                FirstName = doctor.FirstName,
+                LastName = doctor.LastName,
+                Licence = doctor.Licence,
+                Specialization = doctor.Specialization,
+            };
+            await doctorService.InsertDoctorAsync(newDoctor);
+
+            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add new doctor ");
+        }
+
+        [HttpPut]
+        [Route("api/doctor/change/{lid}")]
+        public async Task<HttpResponseMessage> ChangeDoctorAsync(DoctorViewModel doctorModel,
+                                          int lid)
+        {
+            DoctorService doctorService = new DoctorService();
+            var upgradedDoctor = new DoctorModel()
+            {
+                FirstName = doctorModel.FirstName,
+                LastName = doctorModel.LastName,
+                Specialization = doctorModel.Specialization,
+            };
+            await doctorService.ChangeDoctorAsync(lid, upgradedDoctor);
+            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with Licence: {lid} ");
+        }
+
+
+
+        [HttpDelete]
+        [Route("api/doctor/delete/{lid}")]
+        public async Task<HttpResponseMessage> DeleteDoctorAsync([FromUri] int lid)
+        {
+            DoctorService doctorService = new DoctorService();
+            var lidCheck = await doctorService.DeleteDoctorAsync(lid);
+
+            if (lidCheck == true)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove doctor with Licence:'{lid}'");
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor with that Licence");
             }
         }
     }
 }
-

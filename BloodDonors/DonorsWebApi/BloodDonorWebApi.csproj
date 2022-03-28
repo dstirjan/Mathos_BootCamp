@@ -163,6 +163,7 @@
     </Compile>
     <Compile Include="Models\DoctorViewModel.cs" />
     <Compile Include="Models\DonorViewModel.cs" />
+    <Compile Include="Models\DonorWriteModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +248,16 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BloodDonor.Model\BloodDonor.Model.csproj">
+      <Project>{3FA9931B-B525-4165-B599-A19DF362FC8D}</Project>
+      <Name>BloodDonor.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BloodDonor.Service\BloodDonor.Service.csproj">
+      <Project>{704096CB-E5DE-4BB3-8AF9-A6E68FE9E2D9}</Project>
+      <Name>BloodDonor.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

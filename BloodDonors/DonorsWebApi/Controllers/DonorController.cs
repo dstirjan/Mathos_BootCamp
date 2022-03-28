@@ -5,119 +5,125 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using BloodDonorWebApi.Models;
+using System.Data.SqlClient;
+using BloodDonor.Service;
+using BloodDonor.Model;
+using System.Threading.Tasks;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DonorController : ApiController
     {
-        static List<DonorViewModel> donors = new List<DonorViewModel>()
-        {
-            new DonorViewModel
-            {
-            Id = 1,
-            FirstName = "Dejan",
-            LastName = "Stirjan",
-            DonNumber = "6",
-            Email = "ds@gmail.com",
-            ReferentCode = Guid.NewGuid(),
-            },
-            new DonorViewModel
-            {
-            Id = 2,
-            FirstName = "Ivan",
-            LastName = "Kovac",
-            DonNumber = "5",
-            Email = "ik@gmail.com",
-            ReferentCode = Guid.NewGuid(),
-            },
-            new DonorViewModel
-            {
-            Id = 3,
-            FirstName = "Marko",
-            LastName = "Hrastinski",
-            DonNumber = "12",
-            Email = "mh@gmail.com",
-            ReferentCode = Guid.NewGuid(),
-            }
-        };
-
         [HttpGet]
-        public HttpResponseMessage Point()
+        [Route("api/donor")]
+        public async Task <HttpResponseMessage> GetDonorAsync()
         {
-            if (donors == null || donors.Count == 0)
+            DonorService donorService = new DonorService();
+            List<DonorModel> mapedDonors = new List<DonorModel>();
+            List<DonorViewModel> showDonor = new List<DonorViewModel>();
+
+            mapedDonors = await donorService.GetDonorAsync();
+            foreach (var donor in mapedDonors)
+            {
+                DonorViewModel donorViewModel = new DonorViewModel();
+                donorViewModel.FirstName = donor.FirstName;
+                donorViewModel.LastName = donor.LastName;
+                donorViewModel.DonNumber = donor.DonationNumber;
+                showDonor.Add(donorViewModel);
+            }
+            if (mapedDonors.Any())
+            {
+
+                return Request.CreateResponse(HttpStatusCode.OK, showDonor);
+            }
+            else
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donors at list");
             }
-            return Request.CreateResponse(HttpStatusCode.OK, donors);
+
         }
 
         [HttpGet()]
-        public HttpResponseMessage Point(int id)
+        [Route("api/donor/{id}")]
+        public async Task<HttpResponseMessage> GetDonorByIdAsync([FromUri] int id)
         {
-            var specificDonor = donors.Find(c => c.Id == id);
-            if (donors == null || donors.Count == 0)
+            DonorService donorService = new DonorService();
+            List<DonorModel> mapedDonors = new List<DonorModel>();
+            List<DonorViewModel> showDonor = new List<DonorViewModel>();
+
+            mapedDonors = await donorService.GetDonorByIdAsync(id);
+            foreach (var donor in mapedDonors)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donors at list");
+                DonorViewModel donorViewModel = new DonorViewModel();
+                donorViewModel.FirstName = donor.FirstName;
+                donorViewModel.LastName = donor.LastName;
+                donorViewModel.DonNumber = donor.DonationNumber;
+                showDonor.Add(donorViewModel);
             }
-            else if (specificDonor == null)
+
+            if (mapedDonors.Any())
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{id}'");
-            }
-            return Request.CreateResponse(HttpStatusCode.OK, specificDonor);
-        }
-        
-        [HttpPost]
-        public HttpResponseMessage Add(DonorViewModel donor)
-        {
-            if (donors.Count > 0)
-            {
-                donor.Id = donors.Max(s => s.Id) + 1;
+                return Request.CreateResponse(HttpStatusCode.OK, showDonor);
             }
             else
             {
-                donor.Id = 1;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with Id = {id}");
             }
-            int id = donor.Id;
-            donors.Add(donor);
-            donor.ReferentCode = Guid.NewGuid();
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.Created, donor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add donor with id '{id}'");
+        }
+
+        [HttpPost]
+        [Route("api/donor/")]
+        public async Task<HttpResponseMessage> IncludeDonorAsync([FromBody] DonorWriteModel addDonor)
+        {
+            DonorService donorService = new DonorService();
+
+            var newDonor = new DonorModel() {
+                FirstName = addDonor.FirstName,
+                LastName = addDonor.LastName,
+                DonationNumber = addDonor.DonNumber,
+                Email = addDonor.Email,
+            };
+           newDonor.ReferentCode = Guid.NewGuid();
+           await donorService.IncludeDonorAsync(newDonor);
+
+            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add new donor ");
         }
 
         [HttpPut]
-        public HttpResponseMessage Change(DonorViewModel donor)
+        [Route("api/donor/{id}")]
+        public async Task<HttpResponseMessage> ChangeDonorByIdAsync([FromUri] int id, [FromBody] DonorWriteModel upgradedDonor)
         {
-            var existingDonor = donors.Find(s => s.Id == donor.Id);
+            DonorService donorService = new DonorService();
 
-            if (existingDonor == null)
+            var donorModel = new DonorModel()
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{donor.Id}'");
-            }
+                FirstName = upgradedDonor.FirstName,
+                LastName = upgradedDonor.LastName,
+                DonationNumber = upgradedDonor.DonNumber,
+                Email = upgradedDonor.Email,
+            };
+           await donorService.ChangeDonorByIdAsync(id, donorModel);
 
-            existingDonor.Id = donor.Id;
-            existingDonor.FirstName = donor.FirstName;
-            existingDonor.LastName = donor.LastName;
-            existingDonor.Email = donor.Email;
-            existingDonor.DonNumber = donor.DonNumber;
-
-            HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, donor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully change donor with id '{donor.Id}'");
+           return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with id: {id} ");
         }
 
         [HttpDelete]
-        public HttpResponseMessage Remove(int id)
+        [Route("api/donor/{id}")]
+        public async Task<HttpResponseMessage> DeleteDonorAsync([FromUri] int id)
         {
-            var specificDonor = donors.Find(c => c.Id == id);
-            donors.Remove(specificDonor);
-            if (specificDonor == null)
+            DonorService donorService = new DonorService();
+            var idCheck = await donorService.DeleteDonorAsync(id);
+
+
+            if (idCheck == true)
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with  id '{id}' at list");
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove donor " +
+                    $"with id '{id}'");
             }
             else
-            {
-                HttpResponseMessage responseMessageOk = Request.CreateResponse(HttpStatusCode.OK, specificDonor);
-                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully remove donor with id '{specificDonor.Id}'");
+                { 
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donor with that id at list");
+                }
             }
-        }
     }
 }
