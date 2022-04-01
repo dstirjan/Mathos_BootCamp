@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using BloodDonor.Repository.Common;
+using BloodDonor.Common;
 
 namespace BloodDonor.Repository
 {
@@ -13,17 +14,53 @@ namespace BloodDonor.Repository
     {
         static string connectionString = @"Data Source=LEGA-MEGA\SQLEXPRESS;Initial Catalog = BloodDonorsDB;Integrated Security = True";
 
-       public async Task< List<DoctorModel>> GetDoctorAsync()
+        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<DoctorModel> doctorModel = new List<DoctorModel>();
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand("SELECT * FROM Doctor;", connection);
-                await connection.OpenAsync();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("SELECT * FROM Doctor ");
 
-                SqlDataReader reader =  await command.ExecuteReaderAsync();
+
+                if (filter != null)
+                {
+                    stringBuilder.Append("where 1 = 1");
+                    if (!string.IsNullOrWhiteSpace(filter.FirstName))
+                    { stringBuilder.Append($" and FirstName = '{filter.FirstName}' "); }
+                    if (!string.IsNullOrWhiteSpace(filter.LastName))
+                    { stringBuilder.Append($"and LastName = '{filter.LastName}' "); }
+                    if (!string.IsNullOrWhiteSpace(filter.Specialization))
+                    { stringBuilder.Append($"and Specilization = '{filter.Specialization}' "); }
+                    if (filter.Licence != 0)
+                    { stringBuilder.Append($"and Licence = '{filter.Licence}' "); }
+                }
+
+               //stringBuilder = stringBuilder.Append(filter);
+
+                if (sorting != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(sorting.SortBy))
+                    { stringBuilder.Append($" ORDER BY {sorting.SortBy} "); }
+
+                    if (!string.IsNullOrWhiteSpace(sorting.SortOrder))
+                    { stringBuilder.Append($" {sorting.SortOrder}"); }
+                }
+
+                //stringBuilder.Append(sorting);
+
+                if (pageing != null)
+                {
+                    stringBuilder.Append($" OFFSET({pageing.PageNumber} - 1) * {pageing.ItemsByPage} ROWS FETCH  NEXT {pageing.ItemsByPage} ROWS ONLY ");
+                }
+
+                //stringBuilder.Append(pageing);
+
+                SqlCommand command = new SqlCommand(stringBuilder.ToString(), connection);
+                await connection.OpenAsync();
+                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
@@ -40,9 +77,8 @@ namespace BloodDonor.Repository
                     connection.Close();
                     reader.Close();
                 }
-
+                return doctorModel;
             }
-            return doctorModel;
         }
         public async Task<List<DoctorModel>> GetDoctorLNAsync(string lastname)
         {
@@ -51,7 +87,7 @@ namespace BloodDonor.Repository
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.LastName = {lastname}", connection);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.LastName = '{lastname}'", connection);
                 await connection.OpenAsync();
 
                 SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -79,7 +115,6 @@ namespace BloodDonor.Repository
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<DoctorModel> doctorModel = new List<DoctorModel>();
- 
 
             using (connection)
             {
@@ -130,12 +165,12 @@ namespace BloodDonor.Repository
         public async Task ChangeDoctorAsync(int lid,DoctorModel doctorModel)
         {
             SqlDataAdapter adapter = new SqlDataAdapter();
-            SqlConnection connection = new SqlConnection();
+            SqlConnection connection = new SqlConnection(connectionString);
 
             using (connection)
             {
                 DoctorModel currentModel = new DoctorModel();
-                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor Where Doctor.Licence = '{lid}';", connection);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor Where Doctor.Licence = {lid};", connection);
 
                 await connection.OpenAsync(); 
                 SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -163,7 +198,7 @@ namespace BloodDonor.Repository
 
                     string upgrade = $"Update Donor set FirstName = '{doctorModel.FirstName}'," +
                         $"LastName = '{doctorModel.LastName}', " +
-                        $"Specialization = '{doctorModel.Specialization}' Where Doctor.Licence = '{lid}';";
+                        $"Specialization = '{doctorModel.Specialization}' Where Doctor.Licence = {lid};";
 
 
                     adapter.UpdateCommand = new SqlCommand(upgrade, connection);
@@ -184,13 +219,13 @@ namespace BloodDonor.Repository
             using (connection)
             {
                 DoctorModel currentModel = new DoctorModel();
-                SqlCommand command1 = new SqlCommand($"SELECT * FROM Donor Where Doctor.Licence = '{lid}';", connection);
+                SqlCommand command1 = new SqlCommand($"SELECT * FROM Doctor Where Doctor.Licence = {lid};", connection);
                 await connection.OpenAsync();                
                 SqlDataReader reader = await command1.ExecuteReaderAsync();
 
                 if (reader.HasRows)
                 {
-                    SqlCommand command2 = new SqlCommand($"DELETE FROM Donor Where Doctor.Licence = '{lid}';", connection);
+                    SqlCommand command2 = new SqlCommand($"DELETE FROM Doctor Where Doctor.Licence = {lid};", connection);
                     reader.Close();
                     adapter.DeleteCommand = command2;
                     await adapter.DeleteCommand.ExecuteNonQueryAsync();

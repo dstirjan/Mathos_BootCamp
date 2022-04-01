@@ -1,4 +1,5 @@
-﻿using BloodDonor.Model;
+﻿using BloodDonor.Common;
+using BloodDonor.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BloodDonor.Service.Common
 {
     public interface IDonorService
     {
-       Task<List<DonorModel>> GetDonorAsync();
+       Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing);
        Task<List<DonorModel>> GetDonorByIdAsync(int id);
         Task IncludeDonorAsync(DonorModel donorModel);
         Task ChangeDonorByIdAsync(int id, DonorModel upgradedDonor);

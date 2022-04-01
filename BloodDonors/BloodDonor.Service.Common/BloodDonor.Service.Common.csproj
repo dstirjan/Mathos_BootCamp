@@ -46,6 +46,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BloodDonor.Common\BloodDonor.Common.csproj">
+      <Project>{C87168E3-9AA2-4780-8683-721809B164E1}</Project>
+      <Name>BloodDonor.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BloodDonor.Model\BloodDonor.Model.csproj">
       <Project>{3FA9931B-B525-4165-B599-A19DF362FC8D}</Project>
       <Name>BloodDonor.Model</Name>

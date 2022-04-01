@@ -46,9 +46,17 @@
     <Compile Include="DoctorService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BloodDonor.Common\BloodDonor.Common.csproj">
+      <Project>{C87168E3-9AA2-4780-8683-721809B164E1}</Project>
+      <Name>BloodDonor.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BloodDonor.Model\BloodDonor.Model.csproj">
       <Project>{3FA9931B-B525-4165-B599-A19DF362FC8D}</Project>
       <Name>BloodDonor.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BloodDonor.Repository.Common\BloodDonor.Repository.Common.csproj">
+      <Project>{D41F744D-8E88-480F-B896-0549B3D144E0}</Project>
+      <Name>BloodDonor.Repository.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BloodDonor.Repository\BloodDonor.Repository.csproj">
       <Project>{32C526E1-A822-4FA2-B507-3DF3A4CB3284}</Project>

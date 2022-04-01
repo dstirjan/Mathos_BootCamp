@@ -1,0 +1,5 @@
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\BloodDonor.DAL.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\BloodDonor.DAL.pdb
+E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.csproj.CoreCompileInputs.cache
+E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.pdb

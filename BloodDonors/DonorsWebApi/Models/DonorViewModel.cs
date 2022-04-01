@@ -9,6 +9,6 @@ namespace BloodDonorWebApi.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int DonNumber { get; set; }
+        public int DonationNumber { get; set; }
     }
 }

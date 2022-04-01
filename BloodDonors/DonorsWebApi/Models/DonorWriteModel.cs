@@ -10,7 +10,7 @@ namespace BloodDonorWebApi.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int DonNumber { get; set; }
+        public int DonationNumber { get; set; }
         public string Email { get; set; }
         public Guid ReferentCode { get; set; }
     }

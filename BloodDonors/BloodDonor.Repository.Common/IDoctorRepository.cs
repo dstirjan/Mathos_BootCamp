@@ -1,4 +1,5 @@
-﻿using BloodDonor.Model;
+﻿using BloodDonor.Common;
+using BloodDonor.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BloodDonor.Repository.Common
 {
     public interface IDoctorRepository
     {
-         Task <List<DoctorModel>> GetDoctorAsync();
+         Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing);
          Task<List<DoctorModel>> GetDoctorLNAsync(string lastname);
          Task<List<DoctorModel>> GetDoctorByLidAsync(int lid);
          Task InsertDoctorAsync(DoctorModel doctorModel);

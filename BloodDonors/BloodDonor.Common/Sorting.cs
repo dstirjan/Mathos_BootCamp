@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BloodDonor.Common
 {
-    public class Class1
+    public class Sorting
     {
+       public string SortOrder { set; get; }
+        public string SortBy { set; get; } = "ASC";
     }
 }

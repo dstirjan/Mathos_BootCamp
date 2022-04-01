@@ -1,5 +1,7 @@
-﻿using BloodDonor.Model;
+﻿using BloodDonor.Common;
+using BloodDonor.Model;
 using BloodDonor.Repository;
+using BloodDonor.Repository.Common;
 using BloodDonor.Service.Common;
 using System;
 using System.Collections.Generic;
@@ -11,32 +13,33 @@ namespace BloodDonor.Service
 {
     public class DonorService : IDonorService
     {
-        public async Task<List<DonorModel>> GetDonorAsync()
+        private readonly IDonorRepository DIDonorRepository;
+        public DonorService(IDonorRepository direpository)
         {
-            DonorRepository donorRepository = new DonorRepository();
-            var donor = await donorRepository.GetDonorAsync();
+            DIDonorRepository = direpository;
+        }
+
+        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        {
+            var donor = await DIDonorRepository.GetDonorAsync(filter, sorting, pageing); ;
             return donor;
         }
         public async Task<List<DonorModel>> GetDonorByIdAsync(int id)
         {
-            DonorRepository donorRepository = new DonorRepository();
-            var donor = await donorRepository.GetDonorByIdAsync(id);
+            var donor = await DIDonorRepository.GetDonorByIdAsync(id);
             return donor;
         }
         public async Task IncludeDonorAsync(DonorModel donorModel)
         {
-            DonorRepository donorRepository = new DonorRepository();
-            await donorRepository.IncludeDonorAsync(donorModel);
+            await DIDonorRepository.IncludeDonorAsync(donorModel);
         }
         public async Task ChangeDonorByIdAsync(int id, DonorModel upgradedDonor)
         {
-            DonorRepository donorRepository = new DonorRepository();
-            await donorRepository.ChangeDonorByIdAsync(id, upgradedDonor);
+            await DIDonorRepository.ChangeDonorByIdAsync(id, upgradedDonor);
         }
         public async Task<bool> DeleteDonorAsync(int id)
         {
-            DonorRepository donorRepository = new DonorRepository();
-            var idCheck = await donorRepository.DeleteDonorAsync(id);
+            var idCheck = await DIDonorRepository.DeleteDonorAsync(id);
             return idCheck;
         }
     }

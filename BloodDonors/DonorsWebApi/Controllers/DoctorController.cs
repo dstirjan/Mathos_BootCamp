@@ -9,32 +9,41 @@ using BloodDonorWebApi.Models;
 using BloodDonor.Service;
 using BloodDonor.Model;
 using System.Threading.Tasks;
+using BloodDonor.Service.Common;
+using BloodDonor.Common;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DoctorController : ApiController
     {
+        private readonly IDoctorService DIDoctorService;
+        public DoctorController(IDoctorService diservice)
+        {
+            DIDoctorService = diservice;
+        }
+
+
         [HttpGet]
         [Route("api/doctor")]
-        public async Task<HttpResponseMessage> GetDoctorAsync()
+        public async Task<HttpResponseMessage> GetDoctorAsync([FromUri]StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Pageing pageing)
         {
-            DoctorService doctorService = new DoctorService();
+
             List<DoctorModel> mapModel = new List<DoctorModel>();
             List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
 
-            mapModel =await doctorService.GetDoctorAsync();
+            mapModel =await DIDoctorService.GetDoctorAsync(filter, sorting, pageing);
 
-            foreach (var doctor in mapModel)
-            {
-                DoctorViewModel doctorViewModel = new DoctorViewModel();
-                doctorViewModel.Licence = doctor.Licence;
-                doctorViewModel.FirstName = doctor.FirstName;
-                doctorViewModel.LastName = doctor.LastName;
-                doctorViewModel.Specialization = doctor.Specialization;
-                viewModel.Add(doctorViewModel);
-            }
             if (mapModel.Any())
             {
+                foreach (var doctor in mapModel)
+                {
+                    DoctorViewModel doctorViewModel = new DoctorViewModel();
+                    doctorViewModel.Licence = doctor.Licence;
+                    doctorViewModel.FirstName = doctor.FirstName;
+                    doctorViewModel.LastName = doctor.LastName;
+                    doctorViewModel.Specialization = doctor.Specialization;
+                    viewModel.Add(doctorViewModel);
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, viewModel);
             }
             else
@@ -49,25 +58,24 @@ namespace BloodDonorWebApi.Controllers
         public async Task<HttpResponseMessage> GetDoctorLNAsync([FromUri] string lastName)
         {
 
-            DoctorService doctorService = new DoctorService();
             List<DoctorModel> mapModel = new List<DoctorModel>();
             List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
 
 
-            mapModel = await doctorService.GetDoctorLNAsync(lastName);
-            foreach (var doctor in mapModel)
-            {
-                DoctorViewModel doctorView = new DoctorViewModel();
-                doctorView.Licence = doctor.Licence;
-                doctorView.FirstName = doctor.FirstName;
-                doctorView.LastName = doctor.LastName;
-                doctorView.Specialization = doctor.Specialization;
-
-                viewModel.Add(doctorView);
-            }
+            mapModel = await DIDoctorService.GetDoctorLNAsync(lastName);
 
             if (mapModel.Any())
             {
+                foreach (var doctor in mapModel)
+                {
+                    DoctorViewModel doctorView = new DoctorViewModel();
+                    doctorView.Licence = doctor.Licence;
+                    doctorView.FirstName = doctor.FirstName;
+                    doctorView.LastName = doctor.LastName;
+                    doctorView.Specialization = doctor.Specialization;
+
+                    viewModel.Add(doctorView);
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, viewModel);
             }
             else
@@ -80,25 +88,25 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/doctor/licence/{lid}")]
         public async Task<HttpResponseMessage> GetDoctorByLidAsync([FromUri] int lid)
         {
-            DoctorService doctorService = new DoctorService();
             List<DoctorModel> mapModel = new List<DoctorModel>();
             List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
 
 
-            mapModel = await doctorService.GetDoctorByLidAsync(lid);
-            foreach (var doctor in mapModel)
-            {
-                DoctorViewModel doctorView = new DoctorViewModel();
-                doctorView.Licence = doctor.Licence;
-                doctorView.FirstName = doctor.FirstName;
-                doctorView.LastName = doctor.LastName;
-                doctorView.Specialization = doctor.Specialization;
-
-                viewModel.Add(doctorView);
-            }
+            mapModel = await DIDoctorService.GetDoctorByLidAsync(lid);
+           
 
             if (mapModel.Any())
             {
+                foreach (var doctor in mapModel)
+                {
+                    DoctorViewModel doctorView = new DoctorViewModel();
+                    doctorView.Licence = doctor.Licence;
+                    doctorView.FirstName = doctor.FirstName;
+                    doctorView.LastName = doctor.LastName;
+                    doctorView.Specialization = doctor.Specialization;
+
+                    viewModel.Add(doctorView);
+                }
                 return Request.CreateResponse(HttpStatusCode.OK, viewModel);
             }
             else
@@ -111,35 +119,49 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/doctor/add")]
         public async Task<HttpResponseMessage> InsertDoctorAsync([FromBody] DoctorViewModel doctor)
         {
-            DoctorService doctorService = new DoctorService();
-            List<DoctorViewModel> bodyCheck = new List<DoctorViewModel>();
+            //List<DoctorViewModel> bodyCheck = new List<DoctorViewModel>();
 
-            var newDoctor = new DoctorModel()
+            if (doctor.Licence == 0 || doctor == null)
             {
-                FirstName = doctor.FirstName,
-                LastName = doctor.LastName,
-                Licence = doctor.Licence,
-                Specialization = doctor.Specialization,
-            };
-            await doctorService.InsertDoctorAsync(newDoctor);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"You can't add doctor without all information ");
+            }
+            else 
+            {
+                var newDoctor = new DoctorModel()
+                {
+                    FirstName = doctor.FirstName,
+                    LastName = doctor.LastName,
+                    Licence = doctor.Licence,
+                    Specialization = doctor.Specialization,
+                };
+                await DIDoctorService.InsertDoctorAsync(newDoctor);
 
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add new doctor ");
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add new doctor ");
+            }
         }
+
 
         [HttpPut]
         [Route("api/doctor/change/{lid}")]
         public async Task<HttpResponseMessage> ChangeDoctorAsync(DoctorViewModel doctorModel,
                                           int lid)
         {
-            DoctorService doctorService = new DoctorService();
-            var upgradedDoctor = new DoctorModel()
+             if (doctorModel == null)
             {
-                FirstName = doctorModel.FirstName,
-                LastName = doctorModel.LastName,
-                Specialization = doctorModel.Specialization,
-            };
-            await doctorService.ChangeDoctorAsync(lid, upgradedDoctor);
-            return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with Licence: {lid} ");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"You change informations are incomplete ");
+            }
+            else
+            {
+                var upgradedDoctor = new DoctorModel()
+                {
+                    FirstName = doctorModel.FirstName,
+                    LastName = doctorModel.LastName,
+                    Specialization = doctorModel.Specialization,
+                };
+                await DIDoctorService.ChangeDoctorAsync(lid, upgradedDoctor);
+
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with Licence: {lid} ");
+            }
         }
 
 
@@ -148,8 +170,7 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/doctor/delete/{lid}")]
         public async Task<HttpResponseMessage> DeleteDoctorAsync([FromUri] int lid)
         {
-            DoctorService doctorService = new DoctorService();
-            var lidCheck = await doctorService.DeleteDoctorAsync(lid);
+            var lidCheck = await DIDoctorService.DeleteDoctorAsync(lid);
 
             if (lidCheck == true)
             {

@@ -7,3 +7,5 @@ E:\BootCamp\BloodDonors\BloodDonor.Service.Common\obj\Debug\BloodDonor.Service.C
 E:\BootCamp\BloodDonors\BloodDonor.Service.Common\obj\Debug\BloodDonor.Service.Common.csproj.CopyComplete
 E:\BootCamp\BloodDonors\BloodDonor.Service.Common\obj\Debug\BloodDonor.Service.Common.dll
 E:\BootCamp\BloodDonors\BloodDonor.Service.Common\obj\Debug\BloodDonor.Service.Common.pdb
+E:\BootCamp\BloodDonors\BloodDonor.Service.Common\bin\Debug\BloodDonor.Common.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service.Common\bin\Debug\BloodDonor.Common.pdb

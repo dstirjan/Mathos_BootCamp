@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using BloodDonor.Model;
 using BloodDonor.Repository.Common;
+using BloodDonor.Common;
 
 namespace BloodDonor.Repository
 {
@@ -13,17 +14,44 @@ namespace BloodDonor.Repository
     {
         static string connectionString = @"Data Source=LEGA-MEGA\SQLEXPRESS;Initial Catalog = BloodDonorsDB;Integrated Security = True";
         //List<DonorModel> donorModels = new List<DonorModel>();
-        public async Task<List<DonorModel>> GetDonorAsync()
+        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<DonorModel> donorModels = new List<DonorModel>();
             using (connection)
             {
-                DonorModel donorModel = new DonorModel();
-                SqlCommand command = new SqlCommand("SELECT * FROM Donor;", connection);
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("Select * from Donor ");
+
+                if (filter != null)
+                {
+                    stringBuilder.Append(" where 1 = 1 ");
+                    if (!string.IsNullOrWhiteSpace(filter.FirstName))
+                    { stringBuilder.Append($" and FirstName = '{filter.FirstName}' "); }
+                    if (!string.IsNullOrWhiteSpace(filter.LastName))
+                    { stringBuilder.Append($" and LastName = '{filter.LastName}' "); }
+                    if (filter.DonationNumber != 0)
+                    { stringBuilder.Append($" and DonationNumber = '{filter.DonationNumber}' "); }
+                }
+
+                if (sorting != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(sorting.SortBy))
+                    { stringBuilder.Append($" ORDER BY {sorting.SortBy} "); }
+
+                    if (!string.IsNullOrWhiteSpace(sorting.SortOrder))
+                    { stringBuilder.Append($" {sorting.SortOrder}" ); }
+                }
+
+                if (pageing != null)
+                {
+                    stringBuilder.Append($" OFFSET({pageing.PageNumber} - 1) * {pageing.ItemsByPage} ROWS FETCH  NEXT {pageing.ItemsByPage} ROWS ONLY ");
+                }
+
+
+                SqlCommand command = new SqlCommand(stringBuilder.ToString(), connection);
                 await connection.OpenAsync();
-
-
                SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
@@ -35,7 +63,7 @@ namespace BloodDonor.Repository
                         model.FirstName = (string)reader["FirstName"];
                         model.LastName = (string)reader["LastName"];
                         model.Email = (string)reader["Email"];
-                        model.DonationNumber = (int)reader["DonNumber"];
+                        model.DonationNumber = (int)reader["DonationNumber"];
                         model.ReferentCode = (Guid)reader["ReferentCode"];
 
                         donorModels.Add(model);
@@ -65,7 +93,7 @@ namespace BloodDonor.Repository
                         model.FirstName = (string)reader["FirstName"];
                         model.LastName = (string)reader["LastName"];
                         model.Email = (string)reader["Email"];
-                        model.DonationNumber = (int)reader["DonNumber"];
+                        model.DonationNumber = (int)reader["DonationNumber"];
                         model.ReferentCode = (Guid)reader["ReferentCode"];
 
                         donorModels.Add(model);
@@ -83,7 +111,7 @@ namespace BloodDonor.Repository
             using (connection)
             {
                 await connection.OpenAsync();
-                string newDonor = $"Insert into Donor(FirstName,LastName,Email,DonNumber,ReferentCode) values " +
+                string newDonor = $"Insert into Donor(FirstName,LastName,Email,DonationNumber,ReferentCode) values " +
                     $"('{donorModel.FirstName}'," +
                     $"'{donorModel.LastName}'," +
                     $"'{donorModel.Email}'," +
@@ -113,7 +141,7 @@ namespace BloodDonor.Repository
                         currentModel.FirstName = (string)reader["FirstName"];
                         currentModel.LastName = (string)reader["LastName"];
                         currentModel.Email = (string)reader["Email"];
-                        currentModel.DonationNumber = (int)reader["DonNumber"];
+                        currentModel.DonationNumber = (int)reader["DonationNumber"];
                     }
                     if (upgradedDonor.FirstName != null)
                     { currentModel.FirstName = upgradedDonor.FirstName; }
@@ -135,7 +163,7 @@ namespace BloodDonor.Repository
                     string upgrade = $"Update Donor set FirstName = '{upgradedDonor.FirstName}'," +
                         $"LastName = '{upgradedDonor.LastName}'," +
                         $"Email = '{upgradedDonor.Email}'," +
-                        $"DonNumber = '{upgradedDonor.DonationNumber}'  Where Donor.Id = '{id}';";
+                        $"DonationNumber = '{upgradedDonor.DonationNumber}'  Where Donor.Id = '{id}';";
 
 
                     adapter.UpdateCommand = new SqlCommand(upgrade, connection);

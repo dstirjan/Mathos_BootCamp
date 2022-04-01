@@ -1,5 +1,7 @@
-﻿using BloodDonor.Model;
+﻿using BloodDonor.Common;
+using BloodDonor.Model;
 using BloodDonor.Repository;
+using BloodDonor.Repository.Common;
 using BloodDonor.Service.Common;
 using System;
 using System.Collections.Generic;
@@ -9,42 +11,47 @@ using System.Threading.Tasks;
 
 namespace BloodDonor.Service
 {
-    public class DoctorService   : IDoctorService
+    public class DoctorService : IDoctorService
     {
-        public async Task<List<DoctorModel>> GetDoctorAsync()
+
+        private readonly IDoctorRepository DIDoctorRepository;
+        public DoctorService(IDoctorRepository direpository)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            var doctorModel = await doctorRepository.GetDoctorAsync();
+            DIDoctorRepository = direpository;
+        }
+
+        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        {
+            var doctorModel = await DIDoctorRepository.GetDoctorAsync(filter, sorting, pageing);
+            //throw new NotImplementedException();
             return doctorModel;
         }
         public async Task<List<DoctorModel>> GetDoctorLNAsync(String lastname)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            var doctorModel = await doctorRepository.GetDoctorLNAsync(lastname);
+            var doctorModel = await DIDoctorRepository.GetDoctorLNAsync(lastname);
             return doctorModel;
         }
         public async Task<List<DoctorModel>> GetDoctorByLidAsync(int lid)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            var doctorModel = await doctorRepository.GetDoctorByLidAsync(lid);
+            var doctorModel = await DIDoctorRepository.GetDoctorByLidAsync(lid);
             return doctorModel;
         }
         public async Task InsertDoctorAsync(DoctorModel doctorModel)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            await doctorRepository.InsertDoctorAsync(doctorModel);
+            await DIDoctorRepository.InsertDoctorAsync(doctorModel);
         }
         public async Task ChangeDoctorAsync(int lid, DoctorModel doctorModel)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            await doctorRepository.ChangeDoctorAsync(lid, doctorModel);
+            await DIDoctorRepository.ChangeDoctorAsync(lid, doctorModel);
         }
         public async Task<bool> DeleteDoctorAsync(int lid)
         {
-            DoctorRepository doctorRepository = new DoctorRepository();
-            var lidCheck = await doctorRepository.DeleteDoctorAsync(lid);
+            var lidCheck = await DIDoctorRepository.DeleteDoctorAsync(lid);
             return lidCheck;
         }
+
+ 
     }
 }
+
 

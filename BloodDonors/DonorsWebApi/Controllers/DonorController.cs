@@ -9,26 +9,33 @@ using System.Data.SqlClient;
 using BloodDonor.Service;
 using BloodDonor.Model;
 using System.Threading.Tasks;
+using BloodDonor.Service.Common;
+using BloodDonor.Common;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DonorController : ApiController
     {
+        private readonly IDonorService DIDonorService;
+        public DonorController(IDonorService diservice)
+        {
+            DIDonorService = diservice;
+        }
+
         [HttpGet]
         [Route("api/donor")]
-        public async Task <HttpResponseMessage> GetDonorAsync()
+        public async Task<HttpResponseMessage> GetDonorAsync([FromUri] StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Pageing pageing)
         {
-            DonorService donorService = new DonorService();
             List<DonorModel> mapedDonors = new List<DonorModel>();
             List<DonorViewModel> showDonor = new List<DonorViewModel>();
 
-            mapedDonors = await donorService.GetDonorAsync();
+            mapedDonors = await DIDonorService.GetDonorAsync(filter,sorting,pageing);
             foreach (var donor in mapedDonors)
             {
                 DonorViewModel donorViewModel = new DonorViewModel();
                 donorViewModel.FirstName = donor.FirstName;
                 donorViewModel.LastName = donor.LastName;
-                donorViewModel.DonNumber = donor.DonationNumber;
+                donorViewModel.DonationNumber = donor.DonationNumber;
                 showDonor.Add(donorViewModel);
             }
             if (mapedDonors.Any())
@@ -47,17 +54,17 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/donor/{id}")]
         public async Task<HttpResponseMessage> GetDonorByIdAsync([FromUri] int id)
         {
-            DonorService donorService = new DonorService();
+
             List<DonorModel> mapedDonors = new List<DonorModel>();
             List<DonorViewModel> showDonor = new List<DonorViewModel>();
 
-            mapedDonors = await donorService.GetDonorByIdAsync(id);
+            mapedDonors = await DIDonorService.GetDonorByIdAsync(id);
             foreach (var donor in mapedDonors)
             {
                 DonorViewModel donorViewModel = new DonorViewModel();
                 donorViewModel.FirstName = donor.FirstName;
                 donorViewModel.LastName = donor.LastName;
-                donorViewModel.DonNumber = donor.DonationNumber;
+                donorViewModel.DonationNumber = donor.DonationNumber;
                 showDonor.Add(donorViewModel);
             }
 
@@ -75,44 +82,55 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/donor/")]
         public async Task<HttpResponseMessage> IncludeDonorAsync([FromBody] DonorWriteModel addDonor)
         {
-            DonorService donorService = new DonorService();
-
-            var newDonor = new DonorModel() {
-                FirstName = addDonor.FirstName,
-                LastName = addDonor.LastName,
-                DonationNumber = addDonor.DonNumber,
-                Email = addDonor.Email,
-            };
-           newDonor.ReferentCode = Guid.NewGuid();
-           await donorService.IncludeDonorAsync(newDonor);
+            if (addDonor == null || addDonor.FirstName == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"You can't add doctor without all information ");
+            }
+            else
+            { 
+                var newDonor = new DonorModel() {
+                    FirstName = addDonor.FirstName,
+                    LastName = addDonor.LastName,
+                    DonationNumber = addDonor.DonationNumber,
+                    Email = addDonor.Email,
+                 };
+                    newDonor.ReferentCode = Guid.NewGuid();
+                    await DIDonorService.IncludeDonorAsync(newDonor);
 
             return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully add new donor ");
+            }
         }
 
         [HttpPut]
         [Route("api/donor/{id}")]
         public async Task<HttpResponseMessage> ChangeDonorByIdAsync([FromUri] int id, [FromBody] DonorWriteModel upgradedDonor)
         {
-            DonorService donorService = new DonorService();
-
-            var donorModel = new DonorModel()
+            if (upgradedDonor == null)
             {
-                FirstName = upgradedDonor.FirstName,
-                LastName = upgradedDonor.LastName,
-                DonationNumber = upgradedDonor.DonNumber,
-                Email = upgradedDonor.Email,
-            };
-           await donorService.ChangeDonorByIdAsync(id, donorModel);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"You change informations are incomplete ");
+            }
+            else
+            {
 
-           return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with id: {id} ");
+                var donorModel = new DonorModel()
+                {
+                    FirstName = upgradedDonor.FirstName,
+                    LastName = upgradedDonor.LastName,
+                    DonationNumber = upgradedDonor.DonationNumber,
+                    Email = upgradedDonor.Email,
+                };
+                await DIDonorService.ChangeDonorByIdAsync(id, donorModel);
+
+                return Request.CreateResponse(HttpStatusCode.OK, $"You succsessfully update donor with id: {id} ");
+            }
         }
 
         [HttpDelete]
         [Route("api/donor/{id}")]
         public async Task<HttpResponseMessage> DeleteDonorAsync([FromUri] int id)
         {
-            DonorService donorService = new DonorService();
-            var idCheck = await donorService.DeleteDonorAsync(id);
+
+            var idCheck = await DIDonorService.DeleteDonorAsync(id);
 
 
             if (idCheck == true)

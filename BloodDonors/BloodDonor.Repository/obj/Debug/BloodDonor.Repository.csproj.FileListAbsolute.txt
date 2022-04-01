@@ -9,3 +9,5 @@ E:\BootCamp\BloodDonors\BloodDonor.Repository\obj\Debug\BloodDonor.Repository.dl
 E:\BootCamp\BloodDonors\BloodDonor.Repository\obj\Debug\BloodDonor.Repository.pdb
 E:\BootCamp\BloodDonors\BloodDonor.Repository\bin\Debug\BloodDonor.Repository.Common.dll
 E:\BootCamp\BloodDonors\BloodDonor.Repository\bin\Debug\BloodDonor.Repository.Common.pdb
+E:\BootCamp\BloodDonors\BloodDonor.Repository\bin\Debug\BloodDonor.Common.dll
+E:\BootCamp\BloodDonors\BloodDonor.Repository\bin\Debug\BloodDonor.Common.pdb
