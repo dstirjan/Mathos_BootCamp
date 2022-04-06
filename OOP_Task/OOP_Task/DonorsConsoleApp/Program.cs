@@ -11,72 +11,73 @@ namespace DonorsConsoleApp
         static void Main(string[] args)
         {
             Console.WriteLine($" Do you want to add Doctors (Press 'D') or add Patients ( press 'P') ?");
-            string Tip = Console.ReadLine();
+            char type;
+            type = Console.ReadLine()[0];
             Console.Clear();
             string ExitString = "exit";
 
-            while (Tip != "P" & Tip != "D" & Tip != "p" & Tip != "d")
+            while (type != 'P' & type != 'D' & type != 'p' & type != 'd')
             {
                 Console.WriteLine($"Wrong input. \n Do you want to add Doctors (Press 'D') or add Patients ( press 'P') ?");
-                Tip = Console.ReadLine();
+                type = Console.ReadLine()[0];
                 Console.Clear();
             }
-            if (Tip == "P" ^ Tip == "p")
+            if (type == 'P' || type == 'p')
             {
-                List<Patient> ListPatient = new List<Patient>();
+                List<Patient> listPatient = new List<Patient>();
                 //string ExitString = "exit";
 
                 do
                 {
                     Console.WriteLine($"Insert following information about donor: ");
-                    Patient Patient = new Patient();
+                    Patient patient = new Patient();
                     Console.WriteLine($"First Name: ");
-                    Patient.Name = Console.ReadLine();
+                    patient.Name = Console.ReadLine();
                     Console.WriteLine($"Last Name: ");
-                    Patient.LastName = Console.ReadLine();
-                    Address Address = new Address();
+                    patient.LastName = Console.ReadLine();
+                    Address address = new Address();
                     Console.WriteLine($"Street name: ");
-                    Address.Street = Console.ReadLine();
+                    address.Street = Console.ReadLine();
                     Console.WriteLine($"Street number: ");
-                    Address.StreetNumber = Console.ReadLine();
+                    address.StreetNumber = Console.ReadLine();
                     Console.WriteLine($"City: ");
-                    Address.City = Console.ReadLine();
+                    address.City = Console.ReadLine();
                     Console.WriteLine($"Donate number: ");
-                    Patient.PatientID = Console.ReadLine();
-                    Patient.Code = Guid.NewGuid();
-                    ListPatient.Add(Patient);
+                    patient.PatientID = Console.ReadLine();
+                    patient.Code = Guid.NewGuid();
+                    listPatient.Add(patient);
                     Console.WriteLine($"Write 'exit' for list patients, or another key to contine with patient entry");
                     ExitString = Console.ReadLine();
-                    Patient.Address = Address;
+                    patient.Address = address;
                     Console.Clear();
                 }
                 while (ExitString != "exit");
 
-                foreach (Patient Patient in ListPatient)
+                foreach (Patient patient in listPatient)
 
                 {
-                    Patient.PrintPerson();
+                    patient.PrintPerson();
                 }
                 Console.ReadLine();
             }
             else
             {
-                List<Doctor> ListDoctor = new List<Doctor>();
+                List<Doctor> listDoctor = new List<Doctor>();
                 //string ExitString = "Exit";
 
                 do
                 {
                     Console.WriteLine($"Insert following information about doctor: ");
-                    Doctor Doctor = new Doctor();
+                    Doctor doctor = new Doctor();
                     Console.WriteLine($"First Name: ");
-                    Doctor.Name = Console.ReadLine();
+                    doctor.Name = Console.ReadLine();
                     Console.WriteLine($"Last Name: ");
-                    Doctor.LastName = Console.ReadLine();
+                    doctor.LastName = Console.ReadLine();
                     Console.WriteLine($"Field of specilization: ");
-                    Doctor.Field = Console.ReadLine();
+                    doctor.Field = Console.ReadLine();
                     Console.WriteLine($"OIB: ");
-                    Doctor.OIB = Console.ReadLine();
-                    ListDoctor.Add(Doctor);
+                    doctor.OIB = Console.ReadLine();
+                    listDoctor.Add(doctor);
 
                     Console.WriteLine($"Write 'exit' for list patients, or another key to contine with patient entry");
                     ExitString = Console.ReadLine();
@@ -84,13 +85,18 @@ namespace DonorsConsoleApp
                 }
                 while (ExitString != "exit");
 
-                foreach (Doctor Doctor in ListDoctor)
+                foreach (Doctor doctor in listDoctor)
                 {
-                    Console.WriteLine($"Doctor name: {Doctor.Name} {Doctor.LastName} \n Field of specilization:{Doctor.Field}  " +
-                        $"\n OIB:{Doctor.OIB}\n");
+                    Console.WriteLine($"Doctor name: {doctor.Name} {doctor.LastName} \n Field of specilization:{doctor.Field}  " +
+                        $"\n OIB:{doctor.OIB}\n");
                 }
                 Console.ReadLine();
             }
         }
     }
 }
+
+
+            
+
+
