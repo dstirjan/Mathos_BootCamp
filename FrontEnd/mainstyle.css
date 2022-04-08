@@ -1,0 +1,54 @@
+.linkstyle {
+width: 40px;
+height: 30px;
+margin: 0px;
+padding: 0px;
+}
+#highlight
+{
+	background-color:#E0E3E0;
+	opacity: 0.3;
+}
+
+.tableclass
+{
+	padding-top :5 px;
+	width:100%;
+	
+}
+h1
+{
+	text-align:center ; 
+	padding:150px; 
+	color:FF5F00;
+	
+}
+.textstyle
+{
+text-align:center ;	
+font-family:times;
+font-size:28px;
+color:#DB0090;
+	
+}
+th {
+  border: 1px  solid  inset ;
+  border-radius: 10px;
+  text-align:center ;	
+}
+.hometable
+{
+		width:98%;
+		border:5px dotted gold ;
+		border-radius:16px;
+		color: #DAE717;
+		background-color: #575C09;
+		opacity:0.7;
+}
+td
+{
+	border:1px outset yellow; 
+	font-size:40px; 
+	text-align:center ;
+	
+}
