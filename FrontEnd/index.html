@@ -14,6 +14,7 @@
 </style>
 <head>
   <link rel="stylesheet" href="mainstyle.css">
+<script type = "text/javascript" src="javascript.js"></script>  
 </head>
 <body>
 <table class= "tableclass">
@@ -22,9 +23,20 @@
 		<th ><a href="cherry.html" style="text-decoration: none" ><img src="images/cherry.png" class="linkstyle"> <p style="color:pink">Cherry</p></th>
 </table>
 <h1 style="color:#ffffff;font-family:Arial">Home</h1>
-
+  <button type="button" onclick="popup()">Don't touch me</button>
 <div style="font-family:helvetica;font-size:50px;text-align:center;color:gold;text-shadow: 2px 2px #FF0000"> Ancient civilizations </div>
-<table class="hometable">
+  <div>
+    <!-- <form> -->
+  <label for="name">Name</label>
+  <input type="text" name="Name" id="name" required>
+  <label for="discovery	">Discovery	</label>
+  <input type="text" name="Discovery" id="discovery"required>
+  <label for="extinction">Extinction</label>
+  <input type="text" name="Extinction" id="extinction"required>
+  </div>
+  <button onclick="Submit()" id="submit">Submit</button>
+<!-- </form> -->
+<table class="hometable" id="tab">
 <tr style="background-color: #222403";>
 <td >Name</td><td>Discovery</td><td>Extinction</td>
 </tr>
@@ -38,5 +50,32 @@
 <td >Sumerians</td><td>Arithmetic</td><td>Invasion of Elamites</td>
 </tr>
 </table>
+  <br>
+  <button type="button" onclick="myFunction(row)">Add new row</button>
+  <br>
+  <button type="button" onclick="myDeleteFunction(row)">Delete</button>
+    <br>
+  <button type="button" onclick="myFunction2(row)">Next</button>
+  <br>
+<!-- <script>document.getElementById("submit").onclick=function()
+  {
+      document.getElementById("tab");
+      if(name=null)
+      {
+        alert("Insert all information")
+      }
+      else
+      {
+      var table = document.getElementById("tab");
+      var row = table.insertRow();
+      var name = row.insertCell(0);
+      var discovery = row.insertCell(1);
+      var extinction = row.insertCell(2);
+      name.innerHTML = document.getElementById("name").value;
+      discovery.innerHTML = document.getElementById("discovery").value;
+      extinction.innerHTML = document.getElementById("extinction").value;
+      }
+      return false;
+  }</script> -->
 </body>
 </html>
