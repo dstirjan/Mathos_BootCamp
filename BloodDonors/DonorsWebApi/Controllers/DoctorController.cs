@@ -11,115 +11,86 @@ using BloodDonor.Model;
 using System.Threading.Tasks;
 using BloodDonor.Service.Common;
 using BloodDonor.Common;
+using AutoMapper;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DoctorController : ApiController
     {
         private readonly IDoctorService DIDoctorService;
-        public DoctorController(IDoctorService diservice)
+        private readonly IMapper _mapper;
+        public DoctorController(IDoctorService diservice, IMapper mapper)
         {
             DIDoctorService = diservice;
+            _mapper = mapper;
         }
 
 
         [HttpGet]
         [Route("api/doctor")]
-        public async Task<HttpResponseMessage> GetDoctorAsync([FromUri]StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Pageing pageing)
+        public async Task<HttpResponseMessage> GetDoctorAsync([FromUri] StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Paging paging)
         {
+            List<DoctorModel> doctorModel;
 
-            List<DoctorModel> mapModel = new List<DoctorModel>();
-            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+            doctorModel = await DIDoctorService.GetDoctorAsync(filter, sorting, paging);
 
-            mapModel =await DIDoctorService.GetDoctorAsync(filter, sorting, pageing);
-
-            if (mapModel.Any())
+            if (doctorModel.Any())
             {
-                foreach (var doctor in mapModel)
-                {
-                    DoctorViewModel doctorViewModel = new DoctorViewModel();
-                    doctorViewModel.Licence = doctor.Licence;
-                    doctorViewModel.FirstName = doctor.FirstName;
-                    doctorViewModel.LastName = doctor.LastName;
-                    doctorViewModel.Specialization = doctor.Specialization;
-                    viewModel.Add(doctorViewModel);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
+
+                return Request.CreateResponse(HttpStatusCode.OK, _mapper.Map<List<DoctorViewModel>>(doctorModel));
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donors at list");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor  at list");
             }
 
         }
+    
 
         [HttpGet()]
         [Route("api/doctor/lastname/{lastName}")]
         public async Task<HttpResponseMessage> GetDoctorLNAsync([FromUri] string lastName)
         {
+            List<DoctorModel> doctorModel;
 
-            List<DoctorModel> mapModel = new List<DoctorModel>();
-            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+            doctorModel = await DIDoctorService.GetDoctorLNAsync(lastName);
 
-
-            mapModel = await DIDoctorService.GetDoctorLNAsync(lastName);
-
-            if (mapModel.Any())
+            if (doctorModel.Any())
             {
-                foreach (var doctor in mapModel)
-                {
-                    DoctorViewModel doctorView = new DoctorViewModel();
-                    doctorView.Licence = doctor.Licence;
-                    doctorView.FirstName = doctor.FirstName;
-                    doctorView.LastName = doctor.LastName;
-                    doctorView.Specialization = doctor.Specialization;
 
-                    viewModel.Add(doctorView);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
+                return Request.CreateResponse(HttpStatusCode.OK, _mapper.Map<List<DoctorViewModel>>(doctorModel));
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no any doctor with {lastName}");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor  at list");
             }
+
         }
 
         [HttpGet()]
         [Route("api/doctor/licence/{lid}")]
         public async Task<HttpResponseMessage> GetDoctorByLidAsync([FromUri] int lid)
         {
-            List<DoctorModel> mapModel = new List<DoctorModel>();
-            List<DoctorViewModel> viewModel = new List<DoctorViewModel>();
+            List<DoctorModel> doctorModel;
 
+            doctorModel = await DIDoctorService.GetDoctorByLidAsync(lid);
 
-            mapModel = await DIDoctorService.GetDoctorByLidAsync(lid);
-           
-
-            if (mapModel.Any())
+            if (doctorModel.Any())
             {
-                foreach (var doctor in mapModel)
-                {
-                    DoctorViewModel doctorView = new DoctorViewModel();
-                    doctorView.Licence = doctor.Licence;
-                    doctorView.FirstName = doctor.FirstName;
-                    doctorView.LastName = doctor.LastName;
-                    doctorView.Specialization = doctor.Specialization;
 
-                    viewModel.Add(doctorView);
-                }
-                return Request.CreateResponse(HttpStatusCode.OK, viewModel);
+                return Request.CreateResponse(HttpStatusCode.OK, _mapper.Map<List<DoctorViewModel>>(doctorModel));
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no any doctor with Licence: {lid}");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor  at list");
             }
+
         }
 
         [HttpPost]
         [Route("api/doctor/add")]
         public async Task<HttpResponseMessage> InsertDoctorAsync([FromBody] DoctorViewModel doctor)
         {
-            //List<DoctorViewModel> bodyCheck = new List<DoctorViewModel>();
 
             if (doctor.Licence == 0 || doctor == null)
             {
@@ -132,7 +103,7 @@ namespace BloodDonorWebApi.Controllers
                     FirstName = doctor.FirstName,
                     LastName = doctor.LastName,
                     Licence = doctor.Licence,
-                    Specialization = doctor.Specialization,
+                    Specialization = doctor.Specialization
                 };
                 await DIDoctorService.InsertDoctorAsync(newDoctor);
 

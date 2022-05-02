@@ -14,5 +14,6 @@ namespace BloodDonor.Model
         public int DonationNumber { get; set; }
         public string Email { get; set; }
         public Guid ReferentCode { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

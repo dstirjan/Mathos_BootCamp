@@ -115,3 +115,8 @@ E:\BootCamp\BloodDonors\DonorsWebApi\bin\System.Runtime.CompilerServices.Unsafe.
 E:\BootCamp\BloodDonors\DonorsWebApi\bin\System.Threading.Tasks.Extensions.xml
 E:\BootCamp\BloodDonors\DonorsWebApi\bin\BloodDonor.Common.dll
 E:\BootCamp\BloodDonors\DonorsWebApi\bin\BloodDonor.Common.pdb
+E:\BootCamp\BloodDonors\DonorsWebApi\bin\AutoMapper.dll
+E:\BootCamp\BloodDonors\DonorsWebApi\bin\AutoMapper.xml
+E:\BootCamp\BloodDonors\DonorsWebApi\bin\System.Web.Cors.dll
+E:\BootCamp\BloodDonors\DonorsWebApi\bin\System.Web.Http.Cors.dll
+E:\BootCamp\BloodDonors\DonorsWebApi\bin\System.Web.Http.Cors.xml

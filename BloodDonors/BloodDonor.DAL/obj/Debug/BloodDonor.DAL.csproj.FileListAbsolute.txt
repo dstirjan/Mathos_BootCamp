@@ -3,3 +3,15 @@ E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\BloodDonor.DAL.pdb
 E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.csproj.CoreCompileInputs.cache
 E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.dll
 E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.pdb
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\AutoMapper.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\Newtonsoft.Json.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Net.Http.Formatting.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Web.Cors.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Web.Http.Cors.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Web.Http.dll
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\AutoMapper.xml
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\Newtonsoft.Json.xml
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Net.Http.Formatting.xml
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Web.Http.xml
+E:\BootCamp\BloodDonors\BloodDonor.DAL\bin\Debug\System.Web.Http.Cors.xml
+E:\BootCamp\BloodDonors\BloodDonor.DAL\obj\Debug\BloodDonor.DAL.csproj.CopyComplete

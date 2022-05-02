@@ -15,3 +15,14 @@ E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\BloodDonor.Service.Common.p
 E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\BloodDonor.Repository.Common.pdb
 E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\BloodDonor.Common.dll
 E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\BloodDonor.Common.pdb
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\AutoMapper.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\AutoMapper.xml
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\Newtonsoft.Json.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Net.Http.Formatting.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Web.Cors.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Web.Http.Cors.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Web.Http.dll
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\Newtonsoft.Json.xml
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Net.Http.Formatting.xml
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Web.Http.xml
+E:\BootCamp\BloodDonors\BloodDonor.Service\bin\Debug\System.Web.Http.Cors.xml

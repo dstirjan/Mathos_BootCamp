@@ -10,6 +10,9 @@ using BloodDonor.Repository;
 using BloodDonor.Repository.Common;
 using BloodDonor.Service;
 using BloodDonor.Service.Common;
+using AutoMapper;
+using BloodDonorWebApi.Models;
+using DonorsWebApi.Models;
 
 namespace DonorsWebApi.App_Start
 {
@@ -25,11 +28,15 @@ namespace DonorsWebApi.App_Start
             builder.RegisterType<DoctorService>().As<IDoctorService>();
             builder.RegisterType<DonorRepository>().As<IDonorRepository>();
             builder.RegisterType<DoctorRepository>().As<IDoctorRepository>();
-
+            builder.Register(context => new MapperConfiguration(config =>
+            {
+                config.AddProfile(new ControllerMappingProfile());
+            }));
+            builder.Register(context => context.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>().SingleInstance();
             var container = builder.Build();
 
-            var config = GlobalConfiguration.Configuration;
-            config.DependencyResolver = new AutofacWebApiDependencyResolver(container); 
+            var resolver = new AutofacWebApiDependencyResolver(container);
+            GlobalConfiguration.Configuration.DependencyResolver = resolver;
         }
     }
 }

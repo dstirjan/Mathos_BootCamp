@@ -17,13 +17,12 @@ namespace BloodDonor.Service
         private readonly IDoctorRepository DIDoctorRepository;
         public DoctorService(IDoctorRepository direpository)
         {
-            DIDoctorRepository = direpository;
+           DIDoctorRepository = direpository;
         }
 
-        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Paging paging)
         {
-            var doctorModel = await DIDoctorRepository.GetDoctorAsync(filter, sorting, pageing);
-            //throw new NotImplementedException();
+            var doctorModel = await DIDoctorRepository.GetDoctorAsync(filter, sorting, paging);
             return doctorModel;
         }
         public async Task<List<DoctorModel>> GetDoctorLNAsync(String lastname)
