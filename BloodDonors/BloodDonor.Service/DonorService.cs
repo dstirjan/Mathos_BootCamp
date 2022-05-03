@@ -16,12 +16,12 @@ namespace BloodDonor.Service
         private readonly IDonorRepository DIDonorRepository;
         public DonorService(IDonorRepository direpository)
         {
-            DIDonorRepository = direpository;
+            this.DIDonorRepository = direpository;
         }
 
-        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Paging paging)
         {
-            var donor = await DIDonorRepository.GetDonorAsync(filter, sorting, pageing); ;
+            var donor = await DIDonorRepository.GetDonorAsync(filter, sorting, paging); ;
             return donor;
         }
         public async Task<List<DonorModel>> GetDonorByIdAsync(int id)

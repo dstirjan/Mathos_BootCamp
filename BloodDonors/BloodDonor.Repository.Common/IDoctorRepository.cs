@@ -10,7 +10,7 @@ namespace BloodDonor.Repository.Common
 {
     public interface IDoctorRepository
     {
-         Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing);
+         Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Paging paging);
          Task<List<DoctorModel>> GetDoctorLNAsync(string lastname);
          Task<List<DoctorModel>> GetDoctorByLidAsync(int lid);
          Task InsertDoctorAsync(DoctorModel doctorModel);

@@ -10,7 +10,7 @@ namespace BloodDonor.Repository.Common
 {
     public interface IDonorRepository
     {
-        Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing);
+        Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Paging paging);
         Task<List<DonorModel>> GetDonorByIdAsync(int id);
         Task IncludeDonorAsync(DonorModel donorModel);
         Task ChangeDonorByIdAsync(int id, DonorModel upgradedDonor);

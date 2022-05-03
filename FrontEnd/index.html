@@ -8,74 +8,54 @@
 	width: 100%;
 	height:50%;  
 	background-position: center;
-	background-repeat: no-repeat;
+	background-repeat: repeat;
 	background-size: cover;
 }
 </style>
 <head>
   <link rel="stylesheet" href="mainstyle.css">
 <script type = "text/javascript" src="javascript.js"></script>  
-</head>
+   <title>Home</title> 
+   </head>
+   <body>
+       <table class= "tableclass">
+           <th id= "highlight"><a href="index.html" style="text-decoration: none"><img src="images/house.png" class="linkstyle"><p style="color:orange">Home</p></a></th>
+           <th ><a href="forest.html" style="text-decoration: none" ><img src="images/bamboo.png" class="linkstyle"><p style="color:green">Forest</p></th>
+           <th ><a href="cherry.html" style="text-decoration: none" ><img src="images/cherry.png" class="linkstyle"> <p style="color:pink">Cherry</p></th>
+       </table>
+       <h1 style="color:#ffffff;font-family:Arial">Home</h1>
+       <button type="button" onclick="popup()">Don't touch me</button>
+       <div style="font-family:helvetica;font-size:50px;text-align:center;color:gold;text-shadow: 2px 2px #FF0000"> Ancient civilizations </div>
 <body>
-<table class= "tableclass">
-		<th id= "highlight"><a href="index.html" style="text-decoration: none"><img src="images/house.png" class="linkstyle"><p style="color:orange">Home</p></a></th>
-		<th ><a href="forest.html" style="text-decoration: none" ><img src="images/bamboo.png" class="linkstyle"><p style="color:green">Forest</p></th>
-		<th ><a href="cherry.html" style="text-decoration: none" ><img src="images/cherry.png" class="linkstyle"> <p style="color:pink">Cherry</p></th>
-</table>
-<h1 style="color:#ffffff;font-family:Arial">Home</h1>
-  <button type="button" onclick="popup()">Don't touch me</button>
-<div style="font-family:helvetica;font-size:50px;text-align:center;color:gold;text-shadow: 2px 2px #FF0000"> Ancient civilizations </div>
-  <div>
-    <!-- <form> -->
-  <label for="name">Name</label>
-  <input type="text" name="Name" id="name" required>
-  <label for="discovery	">Discovery	</label>
-  <input type="text" name="Discovery" id="discovery"required>
-  <label for="extinction">Extinction</label>
-  <input type="text" name="Extinction" id="extinction"required>
-  </div>
-  <button onclick="Submit()" id="submit">Submit</button>
-<!-- </form> -->
+    <div>
+        <form>
+        <label for="name">Name</label>
+        <input type="text" name="Name" id="name" required>
+        <label for="address	">Discovery	</label>
+        <input type="text" name="Address" id="address"required>
+        <label for="phone">Extinction</label>
+        <input type="text" name="Phone" id="phone"required>
+        <button class="button" type="button" onclick="CreatePerson()">Add Civilization</button>
+    </form>
+    </div>
+    <div id="printList">
+
+    </div>
+
 <table class="hometable" id="tab">
 <tr style="background-color: #222403";>
 <td >Name</td><td>Discovery</td><td>Extinction</td>
 </tr>
 <tr>
-<td >Maya</td><td>Calender</td><td> Environmental degradation</td>
-</tr>
-<tr>
-<td >Atlantis </td><td>Supernatural powers</td><td>Warfare</td>
-</tr>
-<tr>
-<td >Sumerians</td><td>Arithmetic</td><td>Invasion of Elamites</td>
-</tr>
-</table>
-  <br>
-  <button type="button" onclick="myFunction(row)">Add new row</button>
-  <br>
-  <button type="button" onclick="myDeleteFunction(row)">Delete</button>
-    <br>
-  <button type="button" onclick="myFunction2(row)">Next</button>
-  <br>
-<!-- <script>document.getElementById("submit").onclick=function()
-  {
-      document.getElementById("tab");
-      if(name=null)
-      {
-        alert("Insert all information")
-      }
-      else
-      {
-      var table = document.getElementById("tab");
-      var row = table.insertRow();
-      var name = row.insertCell(0);
-      var discovery = row.insertCell(1);
-      var extinction = row.insertCell(2);
-      name.innerHTML = document.getElementById("name").value;
-      discovery.innerHTML = document.getElementById("discovery").value;
-      extinction.innerHTML = document.getElementById("extinction").value;
-      }
-      return false;
-  }</script> -->
+<!-- <td >Maya</td><td>Calender</td><td> Environmental degradation</td> -->
+<!-- </tr> -->
+<!-- <tr> -->
+<!-- <td >Atlantis </td><td>Supernatural powers</td><td>Warfare</td> -->
+<!-- </tr> -->
+<!-- <tr> -->
+<!-- <td >Sumerians</td><td>Arithmetic</td><td>Invasion of Elamites</td> -->
+<!-- </tr> -->
+<!-- </table> -->
+
 </body>
 </html>

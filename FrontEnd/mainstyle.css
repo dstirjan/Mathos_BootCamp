@@ -19,7 +19,7 @@ padding: 0px;
 h1
 {
 	text-align:center ; 
-	padding:150px; 
+	padding:100px; 
 	color:FF5F00;
 	
 }
@@ -51,4 +51,54 @@ td
 	font-size:40px; 
 	text-align:center ;
 	
+}
+.button
+{
+  background-color: gold;
+  border: none;
+  color: red;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: grab;
+}
+.button:hover
+{
+background-color: red;	
+color:gold; 
+cursor: grab;
+	
+}
+.Card {
+    padding: 10px;
+    margin: 10px;
+    background-color: gold;
+    color: #575C09;
+    width: 100%;
+    text-align: justify;
+   
+}
+
+#printList {
+    margin: 0;
+    padding-left: 0.1em;
+    width: 100%;
+    display: table;
+    /* grid-template-columns: repeat(auto-fit, minmax(40rem, 0.6fr)); */
+}
+
+.Card:hover {
+     background-color: skyblue; 
+     cursor: not-allowed;
+}
+
+.Inputs {
+    margin: 50px;
+    text-align: center;
+}
+
+
 }

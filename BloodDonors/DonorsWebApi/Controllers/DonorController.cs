@@ -11,41 +11,36 @@ using BloodDonor.Model;
 using System.Threading.Tasks;
 using BloodDonor.Service.Common;
 using BloodDonor.Common;
+using AutoMapper;
 
 namespace BloodDonorWebApi.Controllers
 {
     public class DonorController : ApiController
     {
         private readonly IDonorService DIDonorService;
-        public DonorController(IDonorService diservice)
+        private readonly IMapper _mapper;
+        public DonorController(IDonorService diservice,IMapper mapper)
         {
             DIDonorService = diservice;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("api/donor")]
-        public async Task<HttpResponseMessage> GetDonorAsync([FromUri] StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Pageing pageing)
+        public async Task<HttpResponseMessage> GetDonorAsync([FromUri] StringFiltering filter, [FromUri] Sorting sorting, [FromUri] Paging paging)
         {
-            List<DonorModel> mapedDonors = new List<DonorModel>();
-            List<DonorViewModel> showDonor = new List<DonorViewModel>();
+            List<DonorModel> donorModel;
 
-            mapedDonors = await DIDonorService.GetDonorAsync(filter,sorting,pageing);
-            foreach (var donor in mapedDonors)
-            {
-                DonorViewModel donorViewModel = new DonorViewModel();
-                donorViewModel.FirstName = donor.FirstName;
-                donorViewModel.LastName = donor.LastName;
-                donorViewModel.DonationNumber = donor.DonationNumber;
-                showDonor.Add(donorViewModel);
-            }
-            if (mapedDonors.Any())
+            donorModel = await DIDonorService.GetDonorAsync(filter, sorting, paging);
+
+            if (donorModel.Any())
             {
 
-                return Request.CreateResponse(HttpStatusCode.OK, showDonor);
+                return Request.CreateResponse(HttpStatusCode.OK, _mapper.Map<List<DoctorViewModel>>(donorModel));
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no donors at list");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor  at list");
             }
 
         }
@@ -54,27 +49,18 @@ namespace BloodDonorWebApi.Controllers
         [Route("api/donor/{id}")]
         public async Task<HttpResponseMessage> GetDonorByIdAsync([FromUri] int id)
         {
+            List<DonorModel> donorModel;
 
-            List<DonorModel> mapedDonors = new List<DonorModel>();
-            List<DonorViewModel> showDonor = new List<DonorViewModel>();
+             donorModel = await DIDonorService.GetDonorByIdAsync(id);
 
-            mapedDonors = await DIDonorService.GetDonorByIdAsync(id);
-            foreach (var donor in mapedDonors)
+            if (donorModel.Any())
             {
-                DonorViewModel donorViewModel = new DonorViewModel();
-                donorViewModel.FirstName = donor.FirstName;
-                donorViewModel.LastName = donor.LastName;
-                donorViewModel.DonationNumber = donor.DonationNumber;
-                showDonor.Add(donorViewModel);
-            }
 
-            if (mapedDonors.Any())
-            {
-                return Request.CreateResponse(HttpStatusCode.OK, showDonor);
+                return Request.CreateResponse(HttpStatusCode.OK, _mapper.Map<List<DoctorViewModel>>(donorModel));
             }
             else
             {
-                return Request.CreateResponse(HttpStatusCode.BadRequest, $"There is no donor with Id = {id}");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "There is no doctor  at list");
             }
         }
 

@@ -13,8 +13,7 @@ namespace BloodDonor.Repository
     public class DonorRepository : IDonorRepository
     {
         static string connectionString = @"Data Source=LEGA-MEGA\SQLEXPRESS;Initial Catalog = BloodDonorsDB;Integrated Security = True";
-        //List<DonorModel> donorModels = new List<DonorModel>();
-        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        public async Task<List<DonorModel>> GetDonorAsync(StringFiltering filter, Sorting sorting, Paging paging)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<DonorModel> donorModels = new List<DonorModel>();
@@ -22,11 +21,10 @@ namespace BloodDonor.Repository
             {
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("Select * from Donor ");
+                stringBuilder.Append("Select * from Donor where IsDeleted = 0 ");
 
                 if (filter != null)
                 {
-                    stringBuilder.Append(" where 1 = 1 ");
                     if (!string.IsNullOrWhiteSpace(filter.FirstName))
                     { stringBuilder.Append($" and FirstName = '{filter.FirstName}' "); }
                     if (!string.IsNullOrWhiteSpace(filter.LastName))
@@ -43,12 +41,22 @@ namespace BloodDonor.Repository
                     if (!string.IsNullOrWhiteSpace(sorting.SortOrder))
                     { stringBuilder.Append($" {sorting.SortOrder}" ); }
                 }
-
-                if (pageing != null)
+                else
                 {
-                    stringBuilder.Append($" OFFSET({pageing.PageNumber} - 1) * {pageing.ItemsByPage} ROWS FETCH  NEXT {pageing.ItemsByPage} ROWS ONLY ");
+                    Sorting sort = new Sorting();
+                    stringBuilder.Append($"ORDER BY {sort.SortBy} {sort.SortOrder}");
                 }
 
+                if (paging != null)
+                {
+                    stringBuilder.Append($" OFFSET({paging.PageNumber} - 1) * {paging.ItemsByPage} ROWS FETCH  NEXT {paging.ItemsByPage} ROWS ONLY ");
+                }
+                else
+                {
+                    Paging page = new Paging();
+                    stringBuilder.Append($" OFFSET({page.PageNumber} - 1) * {page.ItemsByPage } " +
+                        $"ROWS FETCH  NEXT {page.ItemsByPage } ROWS ONLY ");
+                }
 
                 SqlCommand command = new SqlCommand(stringBuilder.ToString(), connection);
                 await connection.OpenAsync();
@@ -80,7 +88,7 @@ namespace BloodDonor.Repository
             List<DonorModel> donorModels = new List<DonorModel>();
             using (connection)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM Donor Where Donor.Id = '{id}';", connection);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Donor Where Donor.Id = '{id}' and IsDeleted= 0;", connection);
                 await connection.OpenAsync();
                 SqlDataReader reader = await  command.ExecuteReaderAsync();
 
@@ -130,48 +138,35 @@ namespace BloodDonor.Repository
             using (connection)
             {
                 DonorModel currentModel = new DonorModel();
-                SqlCommand command = new SqlCommand($"SELECT * FROM Donor Where Donor.Id = '{id}';", connection);
 
                 await connection.OpenAsync();
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                if (reader.HasRows)
+                string command = $"Update Doctor set FirstName = @FirstName, LastName = @LastName,Email = @Email, DonationNumber=@DonationNumber  Where Id = '{id}'";
+
+                SqlCommand sqlCommand = new SqlCommand(command, connection);
+
+                if (!string.IsNullOrWhiteSpace(upgradedDonor.FirstName))
                 {
-                    while (reader.Read())
-                    {
-                        currentModel.FirstName = (string)reader["FirstName"];
-                        currentModel.LastName = (string)reader["LastName"];
-                        currentModel.Email = (string)reader["Email"];
-                        currentModel.DonationNumber = (int)reader["DonationNumber"];
-                    }
-                    if (upgradedDonor.FirstName != null)
-                    { currentModel.FirstName = upgradedDonor.FirstName; }
-                    else
-                    { upgradedDonor.FirstName = currentModel.FirstName; };
-                    if (upgradedDonor.LastName != null)
-                    { currentModel.LastName = upgradedDonor.LastName; }
-                    else
-                    { upgradedDonor.LastName = currentModel.LastName; };
-                    if (upgradedDonor.Email != null)
-                    { currentModel.Email = upgradedDonor.Email; }
-                    else
-                    { upgradedDonor.Email = currentModel.Email; };
-                    if (upgradedDonor.DonationNumber > 0)
-                    { currentModel.DonationNumber = upgradedDonor.DonationNumber; }
-                    else
-                    { upgradedDonor.DonationNumber = currentModel.DonationNumber; };
-
-                    string upgrade = $"Update Donor set FirstName = '{upgradedDonor.FirstName}'," +
-                        $"LastName = '{upgradedDonor.LastName}'," +
-                        $"Email = '{upgradedDonor.Email}'," +
-                        $"DonationNumber = '{upgradedDonor.DonationNumber}'  Where Donor.Id = '{id}';";
-
-
-                    adapter.UpdateCommand = new SqlCommand(upgrade, connection);
-                    reader.Close();
-                    await adapter.UpdateCommand.ExecuteNonQueryAsync();
-                    connection.Close();
+                    sqlCommand.Parameters.AddWithValue("@FirstName", upgradedDonor.FirstName);
                 }
+                if (!string.IsNullOrWhiteSpace(upgradedDonor.LastName))
+                {
+                    sqlCommand.Parameters.AddWithValue("@LastName", upgradedDonor.LastName);
+                }
+                if (!string.IsNullOrWhiteSpace(upgradedDonor.Email))
+                {
+                    sqlCommand.Parameters.AddWithValue("@Email", upgradedDonor.Email);
+                }
+                if (upgradedDonor.DonationNumber != 0)
+                {
+                    sqlCommand.Parameters.AddWithValue("@Email", upgradedDonor.DonationNumber);
+                }
+
+                adapter.UpdateCommand = sqlCommand;
+                await adapter.UpdateCommand.ExecuteNonQueryAsync();
+                connection.Close();
             }
+
+     
         }
         public async Task<bool> DeleteDonorAsync(int id)
         {
@@ -188,9 +183,9 @@ namespace BloodDonor.Repository
 
                 if (reader.HasRows)
                 {
-                    SqlCommand command2 = new SqlCommand($"DELETE FROM Donor Where Donor.Id = '{id}';", connection);
+                    string update = $"Update Doctor set IsDeleted= 1 Where Donor.Id = '{id}'";
                     reader.Close();
-                    adapter.DeleteCommand = command2;
+                    adapter.UpdateCommand = new SqlCommand(update, connection);
                     await adapter.DeleteCommand.ExecuteNonQueryAsync();
                     idCheck = true;
                     connection.Close();

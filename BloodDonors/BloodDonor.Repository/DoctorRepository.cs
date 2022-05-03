@@ -14,7 +14,7 @@ namespace BloodDonor.Repository
     {
         static string connectionString = @"Data Source=LEGA-MEGA\SQLEXPRESS;Initial Catalog = BloodDonorsDB;Integrated Security = True";
 
-        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Pageing pageing)
+        public async Task<List<DoctorModel>> GetDoctorAsync(StringFiltering filter, Sorting sorting, Paging paging)
         {
             SqlConnection connection = new SqlConnection(connectionString);
             List<DoctorModel> doctorModel = new List<DoctorModel>();
@@ -22,12 +22,11 @@ namespace BloodDonor.Repository
             using (connection)
             {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("SELECT * FROM Doctor ");
+                stringBuilder.Append("SELECT * FROM Doctor where IsDeleted = 0 ");
 
 
                 if (filter != null)
                 {
-                    stringBuilder.Append("where 1 = 1");
                     if (!string.IsNullOrWhiteSpace(filter.FirstName))
                     { stringBuilder.Append($" and FirstName = '{filter.FirstName}' "); }
                     if (!string.IsNullOrWhiteSpace(filter.LastName))
@@ -38,8 +37,6 @@ namespace BloodDonor.Repository
                     { stringBuilder.Append($"and Licence = '{filter.Licence}' "); }
                 }
 
-               //stringBuilder = stringBuilder.Append(filter);
-
                 if (sorting != null)
                 {
                     if (!string.IsNullOrWhiteSpace(sorting.SortBy))
@@ -48,15 +45,23 @@ namespace BloodDonor.Repository
                     if (!string.IsNullOrWhiteSpace(sorting.SortOrder))
                     { stringBuilder.Append($" {sorting.SortOrder}"); }
                 }
-
-                //stringBuilder.Append(sorting);
-
-                if (pageing != null)
+                else
                 {
-                    stringBuilder.Append($" OFFSET({pageing.PageNumber} - 1) * {pageing.ItemsByPage} ROWS FETCH  NEXT {pageing.ItemsByPage} ROWS ONLY ");
+                    Sorting sort = new Sorting();
+                    stringBuilder.Append($"ORDER BY {sort.SortBy} {sort.SortOrder}");
                 }
 
-                //stringBuilder.Append(pageing);
+                if (paging != null)
+                {
+                    stringBuilder.Append($" OFFSET({paging.PageNumber} - 1) * {paging.ItemsByPage} ROWS FETCH  NEXT {paging.ItemsByPage} ROWS ONLY ");
+                }
+                else
+                {
+                    Paging page = new Paging();
+                    stringBuilder.Append($" OFFSET({page.PageNumber} - 1) * {page.ItemsByPage } " +
+                        $"ROWS FETCH  NEXT {page.ItemsByPage } ROWS ONLY ");
+                }
+
 
                 SqlCommand command = new SqlCommand(stringBuilder.ToString(), connection);
                 await connection.OpenAsync();
@@ -87,7 +92,7 @@ namespace BloodDonor.Repository
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.LastName = '{lastname}'", connection);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.LastName = '{lastname}' and IsDeleted = 0", connection);
                 await connection.OpenAsync();
 
                 SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -118,7 +123,7 @@ namespace BloodDonor.Repository
 
             using (connection)
             {
-                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.Licence = {lid}", connection);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor where Doctor.Licence = {lid} and IsDeleted = 0", connection);
                 await connection.OpenAsync();
 
                 SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -155,7 +160,8 @@ namespace BloodDonor.Repository
                     $"'{doctorModel.LastName}'," +
                     $"'{doctorModel.Licence}'," +
                     $"'{doctorModel.Specialization}')";
-
+            
+                         
                 adapter.InsertCommand = new SqlCommand(newDoctor, connection);
                 await adapter.InsertCommand.ExecuteNonQueryAsync();
                 connection.Close();
@@ -170,43 +176,27 @@ namespace BloodDonor.Repository
             using (connection)
             {
                 DoctorModel currentModel = new DoctorModel();
-                SqlCommand command = new SqlCommand($"SELECT * FROM Doctor Where Doctor.Licence = {lid};", connection);
+                await connection.OpenAsync();
+                string command = $"Update Doctor set FirstName = @FirstName, LastName = @LastName,Specialization = @Specialization where Licence= '{lid}'";
+                
+                SqlCommand sqlCommand = new SqlCommand(command,connection);
 
-                await connection.OpenAsync(); 
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                if (reader.HasRows)
+                if (!string.IsNullOrWhiteSpace(doctorModel.FirstName))
                 {
-                    while (reader.Read())
-                    {
-                        currentModel.FirstName = (string)reader["FirstName"];
-                        currentModel.LastName = (string)reader["LastName"];
-                        currentModel.Specialization = (string)reader["Specialization"];
-                    }
-                    if (doctorModel.FirstName != null)
-                    { currentModel.FirstName = doctorModel.FirstName; }
-                    else
-                    { doctorModel.FirstName = currentModel.FirstName; };
-                    if (doctorModel.LastName != null)
-                    { currentModel.LastName = doctorModel.LastName; }
-                    else
-                    { doctorModel.LastName = currentModel.LastName; };
-                    if (doctorModel.Specialization != null)
-                    { currentModel.Specialization = doctorModel.Specialization; }
-                    else
-                    { doctorModel.Specialization = currentModel.Specialization; };
+                    sqlCommand.Parameters.AddWithValue("@FirstName", doctorModel.FirstName);
+                }
+                if (!string.IsNullOrWhiteSpace(doctorModel.LastName))
+                {
+                    sqlCommand.Parameters.AddWithValue("@LastName", doctorModel.LastName);
+                }
+                if (!string.IsNullOrWhiteSpace(doctorModel.Specialization))
+                {
+                    sqlCommand.Parameters.AddWithValue("@Specialization", doctorModel.Specialization);
+                }
 
-
-                    string upgrade = $"Update Donor set FirstName = '{doctorModel.FirstName}'," +
-                        $"LastName = '{doctorModel.LastName}', " +
-                        $"Specialization = '{doctorModel.Specialization}' Where Doctor.Licence = {lid};";
-
-
-                    adapter.UpdateCommand = new SqlCommand(upgrade, connection);
-                    reader.Close();
+                adapter.UpdateCommand = sqlCommand;
                     await adapter.UpdateCommand.ExecuteNonQueryAsync();
                     connection.Close();
-           
-                }
             }
 
         }
@@ -225,10 +215,10 @@ namespace BloodDonor.Repository
 
                 if (reader.HasRows)
                 {
-                    SqlCommand command2 = new SqlCommand($"DELETE FROM Doctor Where Doctor.Licence = {lid};", connection);
+                    string update = $"update Doctor set IsDeleted= 1 Where Doctor.Licence = {lid}";
                     reader.Close();
-                    adapter.DeleteCommand = command2;
-                    await adapter.DeleteCommand.ExecuteNonQueryAsync();
+                    adapter.UpdateCommand = new SqlCommand(update, connection);
+                    await adapter.UpdateCommand.ExecuteNonQueryAsync();
                     lidCheck = true;
                     connection.Close();
                 }
